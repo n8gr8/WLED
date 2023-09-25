@@ -17,15 +17,15 @@ class Animated_Staircase : public Usermod {
     bool enabled = false;                   // Enable this usermod
     unsigned long segment_delay_ms = 150;   // Time between switching each segment
     unsigned long on_time_ms       = 30000; // The time for the light to stay on
-    int8_t topPIRorTriggerPin      = -1;    // disabled
-    int8_t bottomPIRorTriggerPin   = -1;    // disabled
+    int8_t topPIRorTriggerPin      = 2;    // GPIO2 Dig-Uno Q3 // disabled
+    int8_t bottomPIRorTriggerPin   = 3;    // GPIO3 Dig-Uno Q4 // disabled
     int8_t topEchoPin              = -1;    // disabled
     int8_t bottomEchoPin           = -1;    // disabled
     bool useUSSensorTop            = false; // using PIR or UltraSound sensor?
     bool useUSSensorBottom         = false; // using PIR or UltraSound sensor?
     unsigned int topMaxDist        = 50;    // default maximum measured distance in cm, top
     unsigned int bottomMaxDist     = 50;    // default maximum measured distance in cm, bottom
-    bool togglePower               = false; // toggle power on/off with staircase on/off
+    bool togglePower               = true; //TODO can be set/changed in UI also // toggle power on/off with staircase on/off
 
     /* runtime variables */
     bool initDone = false;
