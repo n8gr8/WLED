@@ -1,4 +1,4 @@
-# Touch Advanced Usermod for WLED - version 0.8 (beta)
+# Touch Advanced Usermod for WLED - version 0.9 (beta)
 
 Provides esp32 touch functionality with auto calibration, pin-specific settings and extended functionality.
 
@@ -253,7 +253,7 @@ Note: Change `#define TOUCHADV_NUM_PINS 4` to get more pins
 Note: Click the `info` button in WLED to get current readings for each pin
   
 
-* `GPIO` - The GPIO used, use '-1' to disable
+* `pin` - The GPIO used, use '-1' to disable
 * `ThresholdCap` - Digital buttons will trigger at this cap, analog buttons will register 0% touch. 
 If set to 0, Threshold will be calculated from measured variance * `ThresholdSigma`, this is the most sensitive mode, but might lead to issues if the calibration values are off, which is why it's not the default.
 * `FullCap` - For analog buttons, at this value, the button will register 100% touch. 
@@ -338,3 +338,7 @@ Additional defines:
 `#define TOUCHADV_DEBUG_TRANSITION` gives updates on button transitions
 `#define TOUCHADV_DEBUG_ANALOG_VALUE` gives updates if analog pins are touched
 `#define TOUCHADV_DEBUG_WHEEL` gives updates when the wheel is active
+
+### Changelog:
+
+v0.9: I changed the names of the json config arrays from "pinX" to "touchX" and the "GPIO" field to "pin". This was necessary as WLED now makes config fields or folders starting with "pin" into pin selection fields
