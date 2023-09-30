@@ -11,6 +11,11 @@
  */
 //#include "../usermods/EXAMPLE_v2/usermod_v2_example.h"
 
+// Touch_Advanced Bernis Usermod
+#ifdef  USERMOD_TOUCHADVANCED
+#include  "../usermods/touch_advanced/usermod_v2_touchadvanced.h"
+#endif
+
 #ifdef USERMOD_BATTERY
   #include "../usermods/Battery/usermod_v2_Battery.h"
 #endif
@@ -206,6 +211,12 @@ void registerUsermods()
    * \/ \/ \/
    */
   //usermods.add(new MyExampleUsermod());
+
+  // Touch_Advanced Bernis Usermod
+  #ifdef  USERMOD_TOUCHADVANCED
+  usermods.add(new TouchAdvancedUsermod());
+  #endif
+
   #ifdef USERMOD_BATTERY
   usermods.add(new UsermodBattery());
   #endif

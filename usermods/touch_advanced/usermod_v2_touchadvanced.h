@@ -82,7 +82,7 @@ class TouchAdvancedUsermod : public Usermod {
     unsigned long millisLast      = 0;
     uint16_t  updateCounter       = 0;
     bool      initDone            = false;
- 
+
     // state variables per pin
     float     capLast[pins]       = {0};        // last cap, for mean reset, web interface
     uint8_t   bufferPos[pins]     = {0};
@@ -780,7 +780,7 @@ class TouchAdvancedUsermod : public Usermod {
     {
       DEBUG_PRINT(FPSTR(_name));
       DEBUG_PRINTLN(F(" addToJsonInfo"));
-      // if "u" object does not exist yet wee need to create it
+      // if "u" object does not exist yet we need to create it
       JsonObject user = root["u"];
       if (user.isNull()) user = root.createNestedObject("u");
 
@@ -794,19 +794,20 @@ class TouchAdvancedUsermod : public Usermod {
         JsonArray touchArr = user.createNestedArray(FPSTR(_name));
         touchArr.add(F("calibrating"));
         touchArr.add(F("..."));
-        return;
-      }
-      if (calibrationStep>=2) {
+      } 
+      else {
+        String left;
+        String right;
         for (uint p=0; p<pins; p++) {
-          String temp;
-          temp += FPSTR(_name);
-          temp += F(" Pin ");
-          temp += p;
-          temp += F(" GPIO");
-          temp += pin[p];
-          JsonArray touchArr = user.createNestedArray(temp);
+          //temp += FPSTR(_name);
+          left = F("Touch");
+          left += p;
+          left += F(" pin ");
+          left += pin[p];
+          JsonArray touchArr = user.createNestedArray(left);
           if (pin[p] < 0) {
-            temp = F(" Disabled ");
+            touchArr.add(F("Disabled"));
+            touchArr.add(F("..."));
           } else {
             // read - copy from update function
             float cap      = capLast[p];   // total capacitance in hw_cycles (equal to about 0.25pF)
@@ -816,33 +817,35 @@ class TouchAdvancedUsermod : public Usermod {
             float analog   = (capDelta - capMin) / (capMax-capMin);
 
             if (updateMean)
-              temp = F("EMA: ");
+              right = F("EMA: ");
             else
-              temp = F("Mean: ");  
-            temp += capMean[p];
-            temp += F("&#177;");
-            temp += sqrtf(capVar[p]);
+              right = F("Mean: ");  
+            right += capMean[p];
+            right += F("&#177;");
+            right += sqrtf(capVar[p]);
+            touchArr.add(right);
 
-            temp += F("<br><details><summary>");
-            temp += F("Cap: ");
-            temp += cap;
-            temp += F("</summary>");
+            right = F("<details><summary>");
+            right += F("Cap: ");
+            right += cap;
+            right += F("</summary>");
 
-            temp += F("<br>CapDelta: ");
-            temp += capDelta;
-            temp += F("<br>CapThr: ");
-            temp += capMin;
-            temp += F("<br>CapMax: ");
-            temp += capMax;
+            right += F("<br>CapDelta: ");
+            right += capDelta;
+            right += F("<br>CapThr: ");
+            right += capMin;
+            right += F("<br>CapMax: ");
+            right += capMax;
 
-            temp += F("<br>State");
-            temp += state[p];
-            temp += F("<br>Analog: ");
-            temp += analog*100;
-            temp += F("%");
-            temp += F("</details>");
+            right += F("<br>State");
+            right += state[p];
+            right += F("<br>Analog: ");
+            right += analog*100;
+            right += F("%");
+            right += F("</details>");
+
+            touchArr.add(right);
           }
-          touchArr.add(temp);
         }
       }
 
@@ -870,7 +873,7 @@ class TouchAdvancedUsermod : public Usermod {
       
       // per pin
       for (int p=0; p<pins; p++) {
-        String pinName = "pin"; pinName += p;
+        String pinName = "touch"; pinName += p;
         JsonObject pinConfig = top.createNestedObject(pinName);
         pinConfig[FPSTR(_gpio)] = pin[p];
         pinConfig[FPSTR(_capmin)] = pinCapMin[p];
@@ -917,7 +920,7 @@ class TouchAdvancedUsermod : public Usermod {
 
       // per pin 
       for (int p=0; p<pins; p++) {
-        String pinName = "pin"; pinName += p;
+        String pinName = "touch"; pinName += p;
         JsonObject pinConfig = top[pinName];
         if (pinConfig.isNull()) {
           DEBUG_PRINTLN(F(": No pin config found. (Using defaults.)"));
@@ -971,6 +974,15 @@ class TouchAdvancedUsermod : public Usermod {
       return !top[FPSTR(_gpio)].isNull();
     }
 
+    /*
+     * appendConfigData() is called when user enters usermod settings page
+     * it may add additional metadata for certain entry fields (adding drop down is possible)
+     * be careful not to add too much as oappend() buffer is limited to 3k
+     */
+    void appendConfigData()
+    {
+    }
+
     /**
      * getId() allows you to optionally give your V2 usermod an unique ID (please define it in const.h!).
      * This could be used in the future for the system to determine whether your usermod is installed.
@@ -993,7 +1005,7 @@ const char TouchAdvancedUsermod::_uvariance[]   PROGMEM = "UpdateSigma";
 const char TouchAdvancedUsermod::_nomean[]      PROGMEM = "CapsIncludePad";
 const char TouchAdvancedUsermod::_capmin[]      PROGMEM = "ThresholdCap";
 const char TouchAdvancedUsermod::_capmax[]      PROGMEM = "FullCap";
-const char TouchAdvancedUsermod::_gpio[]        PROGMEM = "GPIO";
+const char TouchAdvancedUsermod::_gpio[]        PROGMEM = "pin";
 const char TouchAdvancedUsermod::_mode[]        PROGMEM = "Mode";
 const char TouchAdvancedUsermod::_actions[]     PROGMEM = "Actions";
 
